@@ -4,13 +4,23 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <errno.h>
 #define byte uint8_t
 #define xorblock uint64_t
 #define BLOCKSIZE 524288	//2^19
 #if BLOCKSIZE%8!=0
 	#error BLOCKSIZE must be multiple of 8
 #endif
-#define out 1
+#define out STDOUT_FILENO
+
+static inline ssize_t readblock(int fd, void *buf, size_t nbytes) {
+	ssize_t nread, totread=0;
+	do {
+		if((nread=read(fd, buf+totread, nbytes-totread))<=0)
+			return nread==0?totread:nread;
+	} while((totread+=nread)<nbytes);
+	return totread;
+}
 
 int main(int argc, char *argv[]) {
 	if(argc==4 && strcmp(argv[3],"_")!=0) {
@@ -34,18 +44,18 @@ int main(int argc, char *argv[]) {
 	if (in1<0) {
 		fprintf(stderr, "Eror opening file \"%s", argv[1]);
 		perror("\"");
-		return EXIT_FAILURE;
+		return errno;
 	}
 	if(argc==4 || argc==3 && strcmp(argv[2],"_")!=0) {
 		in2=open(argv[2], O_RDONLY);
 		if (in2<0) {
 			fprintf(stderr, "Eror opening file \"%s", argv[2]);
 			perror("\"");
-			return EXIT_FAILURE;
+			return errno;
 		}
 	}
 	else
-		in2=0;
+		in2=STDIN_FILENO;
 	if(in1==in2 && in1<=2) {
 		fprintf(stderr, "Error: attempt to read both inputs from std%s\n", in1==0?"in":(in1==1?"out":"err"));
 		return -1;
@@ -58,55 +68,52 @@ int main(int argc, char *argv[]) {
 		return EXIT_FAILURE;
 	}
 	ssize_t rs1, rs2;	//actual read size
-	while((rs1=read(in1, bl1, BLOCKSIZE))==BLOCKSIZE && (rs2=read(in2, bl2, BLOCKSIZE))==BLOCKSIZE) {
+	while((rs1=readblock(in1, bl1, BLOCKSIZE))==BLOCKSIZE && (rs2=readblock(in2, bl2, BLOCKSIZE))==BLOCKSIZE) {
 		for(unsigned i=0; i<BLOCKSIZE/sizeof(xorblock); i++)
 			bl1[i]^=bl2[i];
 		if(write(out, bl1, BLOCKSIZE)!=BLOCKSIZE) {
 			perror("write error");
-			return EXIT_FAILURE;
+			return errno;
 		}
 	}
-	if(rs1<0) { perror(argv[1]); return EXIT_FAILURE; }
+	if(rs1<0) { perror(argv[1]); return errno; }
 	if(rs1<BLOCKSIZE)
-		rs2=read(in2, bl2, BLOCKSIZE);
-	if(rs2<0) { perror(in2==0?argv[2]:"stdin"); return EXIT_FAILURE; }
-	byte blout;
+		rs2=readblock(in2, bl2, BLOCKSIZE);
+	if(rs2<0) { perror(in2==0?argv[2]:"stdin"); return errno; }
 	unsigned i;
 	for(i=0; i<(rs1<=rs2?rs1:rs2); i++) {
-		blout = ((byte*)bl1)[i] ^ ((byte*)bl2)[i];
-		if(write(out, &blout, sizeof(blout))!=sizeof(blout)) {
-			perror("write error");
-			return EXIT_FAILURE;
-		}
+		((byte*)bl1)[i] ^= ((byte*)bl2)[i];
+	}
+	if(write(out, bl1, rs1<=rs2?rs1:rs2)!=(rs1<=rs2?rs1:rs2)) {
+		perror("write error");
+		return errno;
 	}
 	if(!(argc==3 && strcmp(argv[2],"_")==0 || argc==4 && strcmp(argv[3],"_")==0)) {
-		/*for(; i<(rs1>rs2?rs1:rs2); i++) {
-			blout = rs1>rs2 ? ((byte*)bl1)[i] : ((byte*)bl2)[i];
-			if(write(out, &blout, sizeof(blout))!=sizeof(blout)) {
-				perror("write error");
-				return EXIT_FAILURE;
-			}
-		}*/
 		if(rs1!=rs2)
 			if(write(out, &(((byte*)(rs1>rs2?bl1:bl2))[i]), rs1>rs2?rs1-rs2:rs2-rs1) != (rs1>rs2?rs1-rs2:rs2-rs1)) {
 				perror("write error");
-				return EXIT_FAILURE;
+				return errno;
 			}
+		if((rs1<=rs2?in1:in2)>2) close(rs1<=rs2?in1:in2);
+		in1 = rs1>rs2?in1:in2;
 		if(rs1==BLOCKSIZE || rs2==BLOCKSIZE) {
-			in1 = rs1>rs2?in1:in2;
 			while((rs1=read(in1, bl1, BLOCKSIZE))>0) {
 				if(write(out, bl1, rs1)!=rs1) {
 					perror("write error");
-					return EXIT_FAILURE;
+					return errno;
 				}
 			}
-			if(rs1<0) { perror(in1==in2?(argc>=3?argv[2]:"stdin"):argv[1]); return EXIT_FAILURE; }
+			if(rs1<0) { perror(in1==in2?(argc>=3?argv[2]:"stdin"):argv[1]); return errno; }
 		}
 	}
+	else
+		if(in2>2) close(in2);
+	if(in1>2) close(in1);
+#ifndef out
+	if(out>2) close(out);
+#endif
 	free(bl1);
 	free(bl2);
-	if(in1>2) close(in1);
-	if(in2>2) close(in2);
 	
 	return EXIT_SUCCESS;
 }
