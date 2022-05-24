@@ -1,0 +1,24 @@
+#!/bin/sh
+if (($# < 1 || $# >2)); then
+	echo    "Usage:" >&2
+	echo -e "\t$0 file                  #generate 1 key" >&2
+	echo -e "\t$0 file keysNumber       #generate a total of 'keysNumber' keys" >&2
+	echo    "keys are randomly generated (from /dev/random) with same size of 'file'" >&2
+	exit 1
+fi
+
+(($# == 2)) && n=$2 || n=1
+re='^[0-9]+$'
+if ! [[ $n =~ $re ]] ; then
+   echo -e "\e[91merror\e[0m: \"$n\" is not a number" >&2
+   exit 1
+fi
+
+file_size="$(du -b "$1" | awk '{print $1}')B"
+[ $file_size == 'B' ] && exit 1
+
+i=0;
+while ((++i <= $n)); do
+	echo -e "Generating \e[1mxorkey$i\e[0m..." >&2
+	dd if=/dev/random of="xorkey$i" bs=512k count="$file_size" iflag=fullblock status=progress || exit
+done
