@@ -1,4 +1,4 @@
-/*  XORcat, a tool to bitwise-XOR files/streams.
+/*  XORcat, a tool for bitwise-XOR files/streams.
 Copyright © 2022  Samuel Albani <https://gitlab.com/viablu>
 
 This program is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ int main(int argc, char *argv[]) {
 	if(rs1<0) { perror(argv[1]); return errno; }
 	if(rs1<BLOCKSIZE)
 		rs2=readblock(in2, bl2, BLOCKSIZE);
-	if(rs2<0) { perror(in2==0?argv[2]:"stdin"); return errno; }
+	if(rs2<0) { perror(in2==STDIN_FILENO?"stdin":argv[2]); return errno; }
 	unsigned i;
 	for(i=0; i<(rs1<=rs2?rs1:rs2); i++) {
 		((byte*)bl1)[i] ^= ((byte*)bl2)[i];
