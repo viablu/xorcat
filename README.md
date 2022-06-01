@@ -1,4 +1,4 @@
-# XORcat
+# ![XORcat](img/XORcat.svg) XORcat
 
 XORcat is a tool for [bitwise-XOR](https://en.wikipedia.org/wiki/Bitwise_operation#XOR) files/streams.
 
@@ -114,7 +114,7 @@ output is always written to stdout
 
 ## License
 
-![AGPLv3](AGPLv3.svg)
+![AGPLv3](img/AGPLv3.svg)
 
 Copyright © 2022  [Samuel Albani](https://gitlab.com/viablu)
 
