@@ -1,6 +1,6 @@
-# ![XORcat](img/XORcat.svg) XORcat
+# ![XORcat](img/XORcat.svg) XORcat &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgitlab.com%2Fviablu%2Fxorcat&count_bg=%23007EC6&title_bg=%23555555&icon=apachecassandra.svg&icon_color=%23C0FF00&title=Views%20daily%20%2F%20total&edge_flat=false)](https://hits.seeyoufarm.com)
 
-XORcat is a tool for [bitwise-XOR](https://en.wikipedia.org/wiki/Bitwise_operation#XOR) files/streams.
+**XORcat is a tool for [bitwise-XOR](https://en.wikipedia.org/wiki/Bitwise_operation#XOR) files/streams.**
 
 Files/streams of different sizes can also be XORed; in this case, the
 remaining part of the longer file is copied as is (as if it were XORed with
