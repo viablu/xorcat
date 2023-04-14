@@ -1,4 +1,4 @@
-# ![XORcat](img/XORcat.svg) XORcat &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgitlab.com%2Fviablu%2Fxorcat&count_bg=%23007EC6&title_bg=%23555555&icon=apachecassandra.svg&icon_color=%23C0FF00&title=Views%20daily%20%2F%20total&edge_flat=false)](https://hits.seeyoufarm.com)
+# ![XORcat](img/XORcat.svg) XORcat &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgitlab.com%2Fviablu%2Fxorcat&count_bg=%23007EC6&title_bg=%23555555&icon=apachecassandra.svg&icon_color=%23C0FF00&title=Views%20today%20%2F%20total&edge_flat=false)](https://hits.seeyoufarm.com)
 
 **XORcat is a tool for [bitwise-XOR](https://en.wikipedia.org/wiki/Bitwise_operation#XOR) files/streams.**
 
@@ -103,20 +103,21 @@ output is always written to stdout
 	```shell
 	clang -Ofast -s xorcat.c -o xorcat
 	```
+	on Windows, [MSYS2](https://www.msys2.org/) or [Cygwin](https://www.cygwin.com/) can be used
 - **Installing**:
 	```shell
-	sudo cp xorcat xorkeygen /usr/bin/ && sudo chown root: /usr/bin/xorcat /usr/bin/xorkeygen
+	sudo cp xorcat xorkeygen /usr/local/bin/ && sudo chown root: /usr/local/bin/xor{cat,keygen}
 	```
 - **Uninstalling**:
 	```shell
-	sudo rm /usr/bin/xorcat /usr/bin/xorkeygen
+	sudo rm /usr/local/bin/xor{cat,keygen}
 	```
 
 ## License
 
 ![AGPLv3](img/AGPLv3.svg)
 
-Copyright © 2022  [Samuel Albani](https://gitlab.com/viablu)
+Copyright © 2022, 2023  [Samuel Albani](https://gitlab.com/viablu)
 
 XORcat is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by

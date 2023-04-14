@@ -1,5 +1,5 @@
 /*  XORcat, a tool for bitwise-XOR files/streams.
-Copyright © 2022  Samuel Albani <https://gitlab.com/viablu>
+Copyright © 2022, 2023  Samuel Albani <https://gitlab.com/viablu>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -52,20 +52,20 @@ int main(int argc, char *argv[]) {
 		fprintf(stderr, "\t%s input1                  #read input2 from stdin\n", argv[0]);
 		fprintf(stderr, "\t%s input1 _                #read input2 from stdin, stop at the shorter input file length\n", argv[0]);
 		fprintf(stderr, "output is always written to stdout\n");
-		return -1;
+		return EXIT_FAILURE;
 	}
 	//	------- FILES OPENING -------
 	int in1, in2;
 	in1=open(argv[1], O_RDONLY);
 	if (in1<0) {
-		fprintf(stderr, "Eror opening file \"%s", argv[1]);
+		fprintf(stderr, "Error opening file \"%s", argv[1]);
 		perror("\"");
 		return errno;
 	}
 	if(argc==4 || argc==3 && strcmp(argv[2],"_")!=0) {
 		in2=open(argv[2], O_RDONLY);
 		if (in2<0) {
-			fprintf(stderr, "Eror opening file \"%s", argv[2]);
+			fprintf(stderr, "Error opening file \"%s", argv[2]);
 			perror("\"");
 			return errno;
 		}
@@ -74,14 +74,14 @@ int main(int argc, char *argv[]) {
 		in2=STDIN_FILENO;
 	if(in1==in2 && in1<=2) {
 		fprintf(stderr, "Error: attempt to read both inputs from std%s\n", in1==0?"in":(in1==1?"out":"err"));
-		return -1;
+		return EXIT_FAILURE;
 	}
 	
 	//	------- READING DATA -------
 	xorblock *const bl1=malloc(BLOCKSIZE), *const bl2=malloc(BLOCKSIZE);
 	if(bl1==NULL || bl2==NULL) {
 		fputs("malloc: error allocating memory\n", stderr);
-		return EXIT_FAILURE;
+		return 2;
 	}
 	ssize_t rs1, rs2;	//actual read size
 	while((rs1=readblock(in1, bl1, BLOCKSIZE))==BLOCKSIZE && (rs2=readblock(in2, bl2, BLOCKSIZE))==BLOCKSIZE) {
